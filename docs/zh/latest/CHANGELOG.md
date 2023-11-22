@@ -23,6 +23,7 @@ title: CHANGELOG
 
 ## Table of Contents
 
+- [3.7.0](#370)
 - [3.6.0](#360)
 - [3.5.0](#350)
 - [3.4.0](#340)
@@ -73,28 +74,65 @@ title: CHANGELOG
 - [0.7.0](#070)
 - [0.6.0](#060)
 
+## 3.7.0
+
+### Change
+
+- :warning: 创建核心资源时不允许传入 `create_time` 和 `update_time`：[#10232](https://github.com/apache/apisix/pull/10232)
+- :warning: 从 SSL schema 中移除自包含的信息字段 `exptime`、`validity_start` 和 `validity_end`：[10323](https://github.com/apache/apisix/pull/10323)
+- :warning: 在 opentelemetry 插件的属性中，将 `route` 替换为 `apisix.route_name`，将 `service` 替换为 `apisix.service_name`，以遵循 span 名称和属性的标准：[#10393](https://github.com/apache/apisix/pull/10393)
+
+### Core
+
+- :sunrise: 添加令牌以支持 Consul 的访问控制：[#10278](https://github.com/apache/apisix/pull/10278)
+- :sunrise: 支持在 stream_route 中配置 `service_id` 引用 service 资源：[#10298](https://github.com/apache/apisix/pull/10298)
+- :sunrise: 使用 `apisix-runtime` 作为 apisix 运行时：
+  - [#10415](https://github.com/apache/apisix/pull/10415)
+  - [#10427](https://github.com/apache/apisix/pull/10427)
+
+### Plugins
+
+- :sunrise: 为 authz-keycloak 添加测试，使用 apisix secrets：[#10353](https://github.com/apache/apisix/pull/10353)
+- :sunrise: 向 openid-connect 插件添加授权参数：[#10058](https://github.com/apache/apisix/pull/10058)
+- :sunrise: 支持在 zipkin 插件中设置变量：[#10361](https://github.com/apache/apisix/pull/10361)
+- :sunrise: 支持 Nacos ak/sk 认证：[#10445](https://github.com/apache/apisix/pull/10445)
+
+### Bugfixes
+
+- 修复：获取健康检查目标状态失败时使用警告日志：
+  - [#10156](https://github.com/apache/apisix/pull/10156)
+- 修复：更新上游时应保留健康检查的状态：
+  - [#10312](https://github.com/apache/apisix/pull/10312)
+  - [#10307](https://github.com/apache/apisix/pull/10307)
+- 修复：在插件配置模式中添加 name 字段以保持一致性：[#10315](https://github.com/apache/apisix/pull/10315)
+- 修复：优化 upstream_schema 中的 tls 定义和错误的变量：[#10269](https://github.com/apache/apisix/pull/10269)
+- 修复（consul）：无法正常退出：[#10342](https://github.com/apache/apisix/pull/10342)
+- 修复：请求头 `Content-Type: application/x-www-form-urlencoded;charset=utf-8` 会导致 var 条件 `post_arg_xxx` 匹配失败：[#10372](https://github.com/apache/apisix/pull/10372)
+- 修复：在 Mac 上安装失败：[#10403](https://github.com/apache/apisix/pull/10403)
+- 修复（log-rotate）：日志压缩超时导致数据丢失：[#8620](https://github.com/apache/apisix/pull/8620)
+- 修复（kafka-logger）：从 required_acks 枚举值中移除 0：[#10469](https://github.com/apache/apisix/pull/10469)
+
 ## 3.6.0
 
 ### Change
 
 - :warning: 移除 `etcd.use_grpc`，不再支持使用 gRPC 协议与 etcd 进行通信：[#10015](https://github.com/apache/apisix/pull/10015)
-- :warning: 移除 conf server，数据平面不再支持与数据平面进行通信，需要从 `config_provider: control_plane` 调整为 `config_provider: etcd`：[#10012](https://github.com/apache/apisix/pull/10012)
+- :warning: 移除 conf server，数据平面不再支持与控制平面进行通信，需要从 `config_provider: control_plane` 调整为 `config_provider: etcd`：[#10012](https://github.com/apache/apisix/pull/10012)
+- :warning: 严格验证核心资源的输入：[#10233](https://github.com/apache/apisix/pull/10233)
 
 ### Core
 
 - :sunrise: 支持配置访问日志的缓冲区大小：[#10225](https://github.com/apache/apisix/pull/10225)
-- :sunrise: 支持在 DNS 发现中传递 resolv.conf：[#9770](https://github.com/apache/apisix/pull/9770)
-- :sunrise: 不再依赖 Rust：[#10121](https://github.com/apache/apisix/pull/10065)
-- :sunrise: 严格验证核心资源的输入：[#10233](https://github.com/apache/apisix/pull/10233)
-- :sunrise: 在 xrpc 中添加 dubbo 协议支持：[#9660](https://github.com/apache/apisix/pull/9660)
+- :sunrise: 支持在 DNS 发现服务中允许配置 `resolv_conf` 来使用本地 DNS 解析器：[#9770](https://github.com/apache/apisix/pull/9770)
+- :sunrise: 安装不再依赖 Rust：[#10121](https://github.com/apache/apisix/pull/10121)
+- :sunrise: 在 xRPC 中添加 Dubbo 协议支持：[#9660](https://github.com/apache/apisix/pull/9660)
 
 ### Plugins
 
-- :sunrise: 在 traffic-split 插件中支持 https：[#9115](https://github.com/apache/apisix/pull/9115)
-- :sunrise: 支持在 DNS 发现中传递 resolv.conf：[#9770](https://github.com/apache/apisix/pull/9770)
-- :sunrise: 在 ext-plugin 插件中支持重写请求体：[#9990](https://github.com/apache/apisix/pull/9990)
-- :sunrise: 在 opentelemetry 插件中支持设置 nginx 变量：[#8871](https://github.com/apache/apisix/pull/8871)
-- :sunrise: 在 chaitin-waf 插件中支持 unix sock 主机模式：[#10161](https://github.com/apache/apisix/pull/10161)
+- :sunrise: 在 `traffic-split` 插件中支持 HTTPS：[#9115](https://github.com/apache/apisix/pull/9115)
+- :sunrise: 在 `ext-plugin` 插件中支持重写请求体：[#9990](https://github.com/apache/apisix/pull/9990)
+- :sunrise: 在 `opentelemetry` 插件中支持设置 NGINX 变量：[#8871](https://github.com/apache/apisix/pull/8871)
+- :sunrise: 在 `chaitin-waf` 插件中支持 UNIX sock 主机模式：[#10161](https://github.com/apache/apisix/pull/10161)
 
 ### Bugfixes
 
